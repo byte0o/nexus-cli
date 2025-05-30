@@ -32,7 +32,11 @@ pub async fn start_prover(
     match node_id {
         Some(id) => {
             info!("Starting authenticated proving loop for node ID: {}", id);
-            run_authenticated_proving_loop(id, environment).await?;
+            // run_authenticated_proving_loop(id, environment).await?;
+            if let Err(e) = run_authenticated_proving_loop(id, environment).await {
+                error!("Authenticated proving loop failed: {}", e);
+                return Err(e);
+            }
         }
         None => {
             info!("Starting anonymous proving loop");
@@ -121,6 +125,10 @@ async fn run_authenticated_proving_loop(
                 "All {} attempts to prove with node {} failed. Continuing to next proof iteration.",
                 MAX_ATTEMPTS, node_id
             );
+            return Err(ProverError::Orchestrator(format!(
+                "Proving failed after {} attempts for node {}",
+                MAX_ATTEMPTS, node_id
+            )));
         }
 
         proof_count += 1;

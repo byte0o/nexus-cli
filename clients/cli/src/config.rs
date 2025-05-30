@@ -5,12 +5,12 @@ use std::{fs, path::Path};
 
 #[derive(Serialize, Deserialize, Debug, Clone, PartialEq, Eq)]
 pub struct Config {
-    pub node_id: String,
+    pub node_id: Vec<String>,
 }
 
 impl Config {
     /// Create Config with the given node_id.
-    pub fn new(node_id: String) -> Self {
+    pub fn new(node_id: Vec<String>) -> Self {
         Config { node_id }
     }
 
@@ -60,7 +60,7 @@ mod tests {
         let dir = tempdir().unwrap();
         let path = dir.path().join("config.json");
 
-        let config = Config::new("test_node_id".to_string());
+        let config = Config::new(vec!["test_node_id".to_string()]);
         config.save(&path).unwrap();
 
         let loaded_config = Config::load_from_file(&path).unwrap();
@@ -74,7 +74,7 @@ mod tests {
         let path = dir.path().join("nonexistent_dir").join("config.json");
 
         // Attempt to save the configuration
-        let config = Config::new("test_node_id".to_string());
+        let config = Config::new(vec!["test_node_id".to_string()]);
         let result = config.save(&path);
 
         // Check if the directories were created
@@ -92,11 +92,11 @@ mod tests {
         let path = dir.path().join("config.json");
 
         // Create an initial config and save it
-        let config1 = Config::new("test_node_id_1".to_string());
+        let config1 = Config::new(vec!["test_node_id_1".to_string()]);
         config1.save(&path).unwrap();
 
         // Create a new config and save it to the same path
-        let config2 = Config::new("test_node_id_2".to_string());
+        let config2 = Config::new(vec!["test_node_id_2".to_string()]);
         config2.save(&path).unwrap();
 
         // Load the saved config and check if it matches the second one

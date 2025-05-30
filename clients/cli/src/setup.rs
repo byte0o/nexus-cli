@@ -8,7 +8,7 @@ pub enum SetupResult {
     /// The user is in anonymous mode
     Anonymous,
     /// Connected with the given node id
-    Connected(String),
+    Connected(Vec<String>),
     /// Failed to connect.
     Invalid,
 }
@@ -20,13 +20,13 @@ pub async fn run_initial_setup(config_path: &Path) -> Result<SetupResult, std::i
     if config_path.exists() {
         // If a config file exists, attempt to read the node ID from it.
         let node_config = Config::load_from_file(config_path)?;
-        let node_id = node_config.node_id;
+        let node_ids = node_config.node_id;
         println!(
-            "\nThis node is already connected to an account using node id: {}",
-            node_id
+            "\nThis node is already connected to an account using node id: {:?}",
+            node_ids
         );
         if std::env::var_os("NONINTERACTIVE").is_some() {
-            return Ok(SetupResult::Connected(node_id));
+            return Ok(SetupResult::Connected(node_ids));
         }
 
         println!("Do you want to use the existing user account? [Y/n]");
@@ -37,7 +37,7 @@ pub async fn run_initial_setup(config_path: &Path) -> Result<SetupResult, std::i
         };
 
         if use_existing_config {
-            return Ok(SetupResult::Connected(node_id));
+            return Ok(SetupResult::Connected(node_ids));
         } else {
             println!("Ignoring existing node id...");
         }
@@ -75,9 +75,9 @@ pub async fn run_initial_setup(config_path: &Path) -> Result<SetupResult, std::i
             println!("6. Enter the node ID into the terminal below:\n");
 
             let node_id = get_node_id_from_user();
-            let node_config = Config::new(node_id.clone());
+            let node_config = Config::new(vec![node_id.clone()]);
             node_config.save(config_path)?;
-            Ok(SetupResult::Connected(node_id))
+            Ok(SetupResult::Connected(vec![node_id.clone()]))
         }
         _ => {
             println!("Invalid option {}", option);
