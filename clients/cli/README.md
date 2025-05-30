@@ -68,6 +68,12 @@ To run an optimized build using Nexus servers, run the following command in clie
 cargo run -r -- start --env beta --max-threads 4
 ```
 
+```sh
+# Run the CLI on the beta network, with optional argument for parallelism.
+# Support automatic node switching by node id list,If all node IDs fail, wait for an hour and try again. 
+cargo run -r -- start --env beta --max-threads 4 --node-ids 1,2,3,4
+```
+
 ### Clear credentials
 
 ```sh

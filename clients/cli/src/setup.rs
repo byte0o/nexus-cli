@@ -29,18 +29,18 @@ pub async fn run_initial_setup(config_path: &Path) -> Result<SetupResult, std::i
             return Ok(SetupResult::Connected(node_ids));
         }
 
-        println!("Do you want to use the existing user account? [Y/n]");
-        let use_existing_config = {
-            let mut buf = String::new();
-            stdin().read_line(&mut buf)?;
-            !buf.trim().eq_ignore_ascii_case("n")
-        };
+        // println!("Do you want to use the existing user account? [Y/n]");
+        // let use_existing_config = {
+        //     let mut buf = String::new();
+        //     stdin().read_line(&mut buf)?;
+        //     !buf.trim().eq_ignore_ascii_case("n")
+        // };
 
-        if use_existing_config {
+        // if use_existing_config {
             return Ok(SetupResult::Connected(node_ids));
-        } else {
-            println!("Ignoring existing node id...");
-        }
+        // } else {
+        //     println!("Ignoring existing node id...");
+        // }
     } else {
         println!("\nThis node is not connected to any account.\n");
     }

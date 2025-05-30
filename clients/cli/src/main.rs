@@ -115,11 +115,17 @@ async fn main() -> Result<(), Box<dyn Error>> {
                                 .unwrap_or_else(|_| panic!("invalid node id {}", node_id));
                             match prove_parallel(environment, Some(node_id), max_threads).await {
                                 Err(e) => {
-                                    error!("节点 {} 证明失败: {}", node_id, e);
+                                    error!("node id {} prove failed: {}", node_id, e);
                                     error_count += 1;
                                 }
                                 Ok(_) => {}
                             }
+                        }
+                        if error_count == node_ids.len() {
+                            // error!("all nodes failed, retrying in 1 hour...");
+                            error!("all nodes failed, cli exit...");
+                            // tokio::time::sleep(std::time::Duration::from_secs(3600)).await;
+                            return Err("all nodes failed, cli exit".into());
                         }
                     }
                 }
