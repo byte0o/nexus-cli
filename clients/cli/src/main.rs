@@ -100,7 +100,13 @@ async fn main() -> Result<(), Box<dyn Error>> {
                 }
 
                 // == CLI is registered and connected ==
-                SetupResult::Connected(node_ids) => {
+                SetupResult::Connected(config_node_ids) => {
+                    // 优先使用命令行参数 node_ids，如果没有则用 config_node_ids
+                    let node_ids: Vec<String> = if let Some(cli_node_ids) = node_ids {
+                        cli_node_ids.into_iter().map(|id| id.to_string()).collect()
+                    } else {
+                        config_node_ids
+                    };
                     println!("Proving with existing node id: {:?}", node_ids);
                     // let node_id: u64 = node_id
                     //     .parse()
